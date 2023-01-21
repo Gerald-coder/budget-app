@@ -3,7 +3,14 @@ import { Card, ProgressBar, Stack, Button } from "react-bootstrap";
 import { currencyFormatter } from "./Utils";
 import { useBudgets } from "../Context/BudgetContext";
 
-const BudgetCard = ({ name, amount, max }) => {
+const BudgetCard = ({
+  name,
+  amount,
+  max,
+  addExpenseClick,
+  hideButtons,
+  onViewExpenseClick,
+}) => {
   const show = () => {
     return amount > max;
   };
@@ -32,24 +39,36 @@ const BudgetCard = ({ name, amount, max }) => {
           <div className="me-2">{name}</div>
           <div className="d-flex align-items-baseline">
             {currencyFormatter.format(amount)}{" "}
-            <span className="text-muted fs-6 ms-1">
-              /{currencyFormatter.format(max)}
-            </span>
+            {max && (
+              <span className="text-muted fs-6 ms-1">
+                /{currencyFormatter.format(max)}
+              </span>
+            )}
           </div>
         </Card.Title>
-        <ProgressBar
-          min={0}
-          max={max}
-          now={amount}
-          className="rounded-pill"
-          variant={getProgressBar(amount, max)}
-        />
-        <Stack className="mt-2" direction="horizontal" gap="2">
-          <Button className="ms-auto" variant="outline-primary">
-            Add Expenses
-          </Button>
-          <Button variant="outline-secondary">View Expenses</Button>
-        </Stack>
+        {max && (
+          <ProgressBar
+            min={0}
+            max={max}
+            now={amount}
+            className="rounded-pill"
+            variant={getProgressBar(amount, max)}
+          />
+        )}
+        {!hideButtons && (
+          <Stack className="mt-2" direction="horizontal" gap="2">
+            <Button
+              className="ms-auto"
+              variant="outline-primary"
+              onClick={addExpenseClick}
+            >
+              Add Expenses
+            </Button>
+            <Button variant="outline-secondary" onClick={onViewExpenseClick}>
+              View Expenses
+            </Button>
+          </Stack>
+        )}
       </Card.Body>
     </Card>
   );

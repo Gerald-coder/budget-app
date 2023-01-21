@@ -2,14 +2,28 @@ import { useState } from "react";
 import { Container, Stack, Button, Card } from "react-bootstrap";
 import BudgetCard from "./components/BudgetCard";
 import AddBudgetModal from "./components/AddBudgetModal";
-import { useBudgets } from "./Context/BudgetContext";
+import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "./Context/BudgetContext";
 import AddExpenseModal from "./components/AddExpenseModal";
+import UncategorizedBudgetCard from "./components/Uncategorized";
+import TotalBudgetCard from "./components/TotalBudgetCard";
+import ViewExpensesModal from "./components/ViewExpensesModal";
 
 function App() {
   const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const [showExpensesModal, setShowExpensesModal] = useState(false);
+  const [showAddExpenseModalBudgetId, setShowAddExpenseModalBudgetId] =
+    useState();
+  // const [showViewExpenseBudgetModal, setShowViewExpenseBudgetModal] =
+  useState(false);
+  const [viewExpensesModalBudgetId, setViewExpensesModalBudgetId] = useState();
   // // getting our budgets array from context
   const { budgets, getBudgetExpenses } = useBudgets();
+
+  const openAddExpenseModal = (budgetId) => {
+    setShowExpensesModal(true);
+    setShowAddExpenseModalBudgetId(budgetId);
+  };
+
   return (
     <>
       <Container className="my-4">
@@ -18,10 +32,7 @@ function App() {
           <Button variant="primary" onClick={() => setShowAddBudgetModal(true)}>
             Add Budget
           </Button>
-          <Button
-            variant="outline-primary"
-            onClick={() => setShowExpensesModal(true)}
-          >
+          <Button variant="outline-primary" onClick={openAddExpenseModal}>
             Add Expenses
           </Button>
         </Stack>
@@ -35,9 +46,7 @@ function App() {
         >
           {budgets.map((budget) => {
             const amount = getBudgetExpenses(budget.id).reduce(
-              (total, expense) => {
-                return total + expense.amount;
-              },
+              (total, expense) => total + JSON.parse(expense.amount),
               0
             );
             return (
@@ -46,9 +55,20 @@ function App() {
                 amount={amount}
                 name={budget.name}
                 max={budget.max}
+                addExpenseClick={() => openAddExpenseModal(budget.id)}
+                onViewExpenseClick={() =>
+                  setViewExpensesModalBudgetId(budget.id)
+                }
               />
             );
           })}
+          <UncategorizedBudgetCard
+            addExpenseClick={openAddExpenseModal}
+            onViewExpenseClick={() =>
+              setViewExpensesModalBudgetId(UNCATEGORIZED_BUDGET_ID)
+            }
+          />
+          <TotalBudgetCard />
         </div>
       </Container>
       <AddBudgetModal
@@ -56,8 +76,13 @@ function App() {
         handleClose={() => setShowAddBudgetModal(false)}
       />
       <AddExpenseModal
+        defaultBudgetId={showAddExpenseModalBudgetId}
         show={showExpensesModal}
         handleClose={() => setShowExpensesModal(false)}
+      />
+      <ViewExpensesModal
+        budgetId={viewExpensesModalBudgetId}
+        handleClose={() => setViewExpensesModalBudgetId()}
       />
     </>
   );
