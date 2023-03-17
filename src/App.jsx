@@ -13,8 +13,8 @@ function App() {
   const [showExpensesModal, setShowExpensesModal] = useState(false);
   const [showAddExpenseModalBudgetId, setShowAddExpenseModalBudgetId] =
     useState();
-  // const [showViewExpenseBudgetModal, setShowViewExpenseBudgetModal] =
-  useState(false);
+  const [showViewExpenseBudgetModal, setShowViewExpenseBudgetModal] =
+    useState(false);
   const [viewExpensesModalBudgetId, setViewExpensesModalBudgetId] = useState();
   // // getting our budgets array from context
   const { budgets, getBudgetExpenses } = useBudgets();

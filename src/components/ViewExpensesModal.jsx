@@ -6,7 +6,7 @@ function ViewExpensesModal({ budgetId, handleClose }) {
   const { getBudgetExpenses, budgets, deleteBudget, deleteExpenses } =
     useBudgets();
 
-  const budget =
+  const budget = 
     UNCATEGORIZED_BUDGET_ID === budgetId
       ? { name: "uncategorized", id: UNCATEGORIZED_BUDGET_ID }
       : budgets.find((b) => b.id === budgetId);
